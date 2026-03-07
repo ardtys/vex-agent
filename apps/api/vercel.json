@@ -1,9 +1,10 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "installCommand": "cd ../.. && pnpm install && pnpm --filter @vex/shared build",
+  "buildCommand": "pnpm build",
+  "outputDirectory": ".",
   "functions": {
     "api/index.ts": {
-      "runtime": "@vercel/node@3",
       "maxDuration": 30
     }
   },
