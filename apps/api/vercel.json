@@ -1,8 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "installCommand": "cd ../.. && pnpm install && pnpm --filter @vex/shared build",
+  "installCommand": "cd ../.. && npm install -g pnpm && pnpm install --frozen-lockfile --prod=false && pnpm --filter @vex/shared build",
   "buildCommand": "pnpm build",
-  "outputDirectory": ".",
   "functions": {
     "api/index.ts": {
       "maxDuration": 30

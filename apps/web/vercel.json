@@ -1,6 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "sveltekit",
-  "installCommand": "cd ../.. && pnpm install && pnpm --filter @vex/shared build",
+  "installCommand": "cd ../.. && npm install -g pnpm && pnpm install --frozen-lockfile --prod=false && pnpm --filter @vex/shared build",
   "regions": ["sin1"]
 }
