@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+build/
+.svelte-kit/
+.vercel/
+.output/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Keep .env.production as template (contains no secrets)
+!.env.production
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Testing
+coverage/
+
+# Cache
+.turbo/
+.cache/
+*.tsbuildinfo

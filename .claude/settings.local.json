@@ -1,0 +1,36 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(where:*)",
+      "Bash(pnpm install)",
+      "Bash(pnpm --filter @vex/shared build:*)",
+      "Bash(pnpm dev)",
+      "Bash(timeout /t 5 /nobreak)",
+      "Bash(ping:*)",
+      "Bash(curl:*)",
+      "Bash(pnpm add:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(timeout 5 curl:*)",
+      "Bash(timeout 3 tail:*)",
+      "Bash(pnpm build:*)",
+      "Bash(timeout:*)",
+      "Bash(pnpm --filter @vex/api build:*)",
+      "Bash(pnpm --filter @vex/web build:*)",
+      "Bash(pnpm run check:*)",
+      "Bash(pnpm run build:*)",
+      "Bash(tasklist:*)",
+      "Bash(cat:*)",
+      "WebSearch",
+      "WebFetch(domain:docs.dexscreener.com)",
+      "Bash(npm run build:*)",
+      "Bash(taskkill:*)",
+      "Bash(pkill:*)",
+      "Bash(tree:*)",
+      "Bash(node --version:*)",
+      "Bash(pnpm --version:*)",
+      "Bash(npx svelte-kit:*)",
+      "Bash(powershell -Command:*)"
+    ]
+  }
+}

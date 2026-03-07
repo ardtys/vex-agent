@@ -1,0 +1,30 @@
+{
+  "name": "@vex/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "build:vercel": "tsc --outDir .vercel/output/functions/api.func",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist .vercel"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.19.10",
+    "@solana/web3.js": "^1.91.1",
+    "@upstash/ratelimit": "^1.0.1",
+    "@upstash/redis": "^1.28.3",
+    "@vex/shared": "workspace:*",
+    "dotenv": "^16.4.1",
+    "hono": "^4.12.4",
+    "zod": "^3.22.4",
+    "zod-to-json-schema": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
+  }
+}
