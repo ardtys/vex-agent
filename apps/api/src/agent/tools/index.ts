@@ -286,7 +286,7 @@ const rugCheckTool: Tool = {
 		try {
 			const response = await fetch(
 				`https://api.rugcheck.xyz/v1/tokens/${mint}/report`
-			);
+			) as globalThis.Response;
 
 			if (!response.ok) {
 				return {

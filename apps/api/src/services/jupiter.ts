@@ -52,7 +52,7 @@ export async function getQuote(
 		swapMode: 'ExactIn'
 	});
 
-	const response = await fetch(`${JUPITER_API_URL}/quote?${params}`);
+	const response = await fetch(`${JUPITER_API_URL}/quote?${params}`) as globalThis.Response;
 
 	if (!response.ok) {
 		const error = await response.text();
@@ -76,7 +76,7 @@ export async function buildSwapTransaction(
 			dynamicComputeUnitLimit: true,
 			prioritizationFeeLamports: 'auto'
 		})
-	});
+	}) as globalThis.Response;
 
 	if (!response.ok) {
 		const error = await response.text();

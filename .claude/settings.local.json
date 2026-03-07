@@ -30,7 +30,9 @@
       "Bash(node --version:*)",
       "Bash(pnpm --version:*)",
       "Bash(npx svelte-kit:*)",
-      "Bash(powershell -Command:*)"
+      "Bash(powershell -Command:*)",
+      "Bash(git fetch:*)",
+      "Bash(git add:*)"
     ]
   }
 }

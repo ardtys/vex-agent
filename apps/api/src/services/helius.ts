@@ -69,7 +69,7 @@ export async function getAssetsByOwner(ownerAddress: string): Promise<HeliusAsse
 				}
 			}
 		})
-	});
+	}) as globalThis.Response;
 
 	if (!response.ok) {
 		throw new ExternalServiceError('Failed to fetch assets from Helius', 'helius');

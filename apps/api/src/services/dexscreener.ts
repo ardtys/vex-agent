@@ -69,7 +69,7 @@ async function dexFetch<T>(endpoint: string): Promise<T> {
 		headers: {
 			'Accept': 'application/json'
 		}
-	});
+	}) as globalThis.Response;
 
 	if (!response.ok) {
 		throw new ExternalServiceError(

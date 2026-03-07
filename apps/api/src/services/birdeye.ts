@@ -18,7 +18,7 @@ async function birdeyeFetch<T>(endpoint: string): Promise<T> {
 			'X-API-KEY': env.BIRDEYE_API_KEY,
 			'x-chain': 'solana'
 		}
-	});
+	}) as globalThis.Response;
 
 	if (!response.ok) {
 		throw new ExternalServiceError(

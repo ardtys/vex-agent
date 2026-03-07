@@ -76,7 +76,7 @@ export async function* streamCompletion(
 			'X-Title': 'VEX'
 		},
 		body: JSON.stringify(body)
-	});
+	}) as globalThis.Response;
 
 	if (!response.ok) {
 		const error = await response.text();
@@ -221,7 +221,7 @@ export async function complete(
 			'X-Title': 'VEX'
 		},
 		body: JSON.stringify(body)
-	});
+	}) as globalThis.Response;
 
 	if (!response.ok) {
 		const error = await response.text();
