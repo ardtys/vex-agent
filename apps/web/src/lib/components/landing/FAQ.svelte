@@ -101,7 +101,7 @@
 		<div class="mt-8 text-center">
 			<p class="text-sm text-vex-muted">
 				Still have questions?
-				<a href="https://discord.gg/vex" target="_blank" rel="noopener noreferrer" class="text-vex-lime hover:underline">Join our Discord</a>
+				<a href="https://x.com/vex_agent" target="_blank" rel="noopener noreferrer" class="text-vex-lime hover:underline">Follow us on X</a>
 				or
 				<a href="mailto:support@vex.app" class="text-vex-lime hover:underline">contact support</a>
 			</p>

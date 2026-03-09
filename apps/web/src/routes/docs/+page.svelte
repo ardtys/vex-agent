@@ -642,7 +642,7 @@
 						<div class="border border-[var(--border)] p-6">
 							<h3 class="font-display text-xl text-[var(--white)] mb-3">How do I report bugs or provide feedback?</h3>
 							<p class="text-[var(--muted)] text-sm leading-relaxed">
-								You can reach us via Discord or Twitter. Links are available in the footer of this page. We greatly appreciate feedback to continuously improve VEX.
+								You can reach us via X (Twitter) at @vex_agent. We greatly appreciate feedback to continuously improve VEX.
 							</p>
 						</div>
 					</div>
