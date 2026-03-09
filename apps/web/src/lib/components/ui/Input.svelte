@@ -9,6 +9,7 @@
 	export let disabled: boolean = false;
 	export let required: boolean = false;
 	export let icon: string | undefined = undefined;
+	export let id: string = `input-${Math.random().toString(36).slice(2, 9)}`;
 
 	const dispatch = createEventDispatcher<{
 		input: string;
@@ -27,7 +28,7 @@
 
 <div class="w-full">
 	{#if label}
-		<label class="mb-1.5 block font-mono text-xs uppercase tracking-wider text-vex-muted">
+		<label for={id} class="mb-1.5 block font-mono text-xs uppercase tracking-wider text-vex-muted">
 			{label}
 			{#if required}
 				<span class="text-vex-red">*</span>
@@ -43,6 +44,7 @@
 		{/if}
 
 		<input
+			{id}
 			{type}
 			{value}
 			{placeholder}

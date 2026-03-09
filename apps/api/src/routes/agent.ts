@@ -102,7 +102,7 @@ agent.post('/approve', rateLimitMiddleware, async (c) => {
 
 // DELETE /agent/session/:id - Clear session history
 agent.delete('/session/:id', rateLimitMiddleware, async (c) => {
-	const sessionId = c.req.param('id');
+	const sessionId = c.req.param('id')!;
 	sessions.delete(sessionId);
 	return c.json({ success: true, sessionId });
 });

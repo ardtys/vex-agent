@@ -167,7 +167,9 @@
 	$: fromAmount, fromToken, toToken, calculateSwap();
 
 	// Active tab state
-	let activeTab: 'tokens' | 'portfolio' | 'chat' | 'swap' = 'tokens';
+	type TabType = 'tokens' | 'portfolio' | 'chat' | 'swap';
+	const tabs: TabType[] = ['tokens', 'portfolio', 'chat', 'swap'];
+	let activeTab: TabType = 'tokens';
 
 	// Total portfolio value
 	$: totalValue = portfolio.reduce((acc, item) => acc + item.value, 0);
@@ -248,7 +250,7 @@
 
 		<!-- Tab Navigation -->
 		<div class="flex justify-center gap-2 mb-8 flex-wrap">
-			{#each ['tokens', 'portfolio', 'chat', 'swap'] as tab}
+			{#each tabs as tab (tab)}
 				<button
 					class="px-6 py-3 font-mono text-xs uppercase tracking-wider transition-all duration-300
 						{activeTab === tab

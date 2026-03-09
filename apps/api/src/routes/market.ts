@@ -46,7 +46,7 @@ market.get('/token/:mint', rateLimitMiddleware, async (c) => {
 		throw new ValidationError('Invalid token mint address');
 	}
 
-	const tokenData = await dexscreener.getTokenData(mint);
+	const tokenData = await dexscreener.getTokenData(parsed.data);
 
 	if (!tokenData) {
 		return c.json({ error: 'Token not found' }, 404);
@@ -64,7 +64,7 @@ market.get('/price/:mint', rateLimitMiddleware, async (c) => {
 		throw new ValidationError('Invalid token mint address');
 	}
 
-	const price = await dexscreener.getTokenPrice(mint);
+	const price = await dexscreener.getTokenPrice(parsed.data);
 
 	if (!price) {
 		return c.json({ error: 'Price not found' }, 404);

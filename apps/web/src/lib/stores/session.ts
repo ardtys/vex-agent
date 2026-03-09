@@ -117,7 +117,7 @@ function createSessionStore() {
 								isStreaming: false,
 								currentStreamText: '',
 								currentStreamEvents: [],
-								error: event.type === 'error' ? event.error : null
+								error: event.type === 'error' ? (event.error ?? null) : null
 							};
 						});
 					}

@@ -29,7 +29,7 @@ wallet.get('/:pubkey', rateLimitMiddleware, async (c) => {
 		throw new ValidationError('Invalid wallet address');
 	}
 
-	const walletContext = await helius.getWalletContext(pubkey);
+	const walletContext = await helius.getWalletContext(parsed.data);
 	return c.json(walletContext);
 });
 
@@ -44,7 +44,7 @@ wallet.get('/:pubkey/pnl', rateLimitMiddleware, async (c) => {
 		throw new ValidationError('Invalid wallet address');
 	}
 
-	const pnl = await helius.getPnL(pubkey, timeframe);
+	const pnl = await helius.getPnL(parsed.data, timeframe);
 	return c.json(pnl);
 });
 
@@ -57,7 +57,7 @@ wallet.get('/:pubkey/balances', rateLimitMiddleware, async (c) => {
 		throw new ValidationError('Invalid wallet address');
 	}
 
-	const walletContext = await helius.getWalletContext(pubkey);
+	const walletContext = await helius.getWalletContext(parsed.data);
 	const balances: TokenBalance[] = walletContext.topHoldings;
 
 	return c.json({ balances });
