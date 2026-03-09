@@ -2,7 +2,7 @@
 	import { reveal } from '$lib/actions/reveal';
 	import GradientText from '../ui/GradientText.svelte';
 
-	const contractAddress = 'COMING SOON';
+	const contractAddress = '0xF10bed1ec5bE7f75071F25aF32BEF97ed1841BA3';
 	let copied = false;
 
 	async function copyToClipboard() {
