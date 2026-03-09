@@ -16,6 +16,7 @@
 	import LiveStats from '$lib/components/landing/LiveStats.svelte';
 	import FAQ from '$lib/components/landing/FAQ.svelte';
 	import Partners from '$lib/components/landing/Partners.svelte';
+	import SupportedBy from '$lib/components/landing/SupportedBy.svelte';
 	import { FloatingElements } from '$lib/components/ui';
 	import { ToastContainer } from '$lib/components/ui';
 </script>
@@ -43,6 +44,7 @@
 <Marquee text="SWAP • LAUNCH • TRACK • PROFIT" />
 <TrendingTokens />
 <Partners />
+<SupportedBy />
 <Testimonials />
 <FAQ />
 <EarlyAccess />
