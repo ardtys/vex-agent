@@ -1,10 +1,69 @@
 import { handle } from 'hono/vercel';
-import type { Context } from 'hono';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { z } from 'zod';
 import { Connection, PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js';
-import type { StreamEvent, WalletContext, Message, TokenData, TrendingToken } from '@vex/shared';
+
+// ============ LOCAL TYPES ============
+interface TokenData {
+	mint: string;
+	symbol: string;
+	name: string;
+	price: number;
+	mcap: number;
+	volume24h: number;
+	priceChange1h: number;
+	priceChange24h: number;
+	holders: number;
+	liquidity: number;
+	createdAt: number;
+}
+
+interface TrendingToken {
+	mint: string;
+	symbol: string;
+	name: string;
+	price: number;
+	mcap: number;
+	priceChange: number;
+	volume: number;
+	rank: number;
+}
+
+interface TokenBalance {
+	mint: string;
+	symbol: string;
+	name: string;
+	balance: number;
+	decimals: number;
+	usdValue: number;
+	priceChange24h: number;
+	logoUri?: string;
+}
+
+interface WalletContext {
+	publicKey: string;
+	solBalance: number;
+	solUsd: number;
+	topHoldings: TokenBalance[];
+	totalPortfolioUsd: number;
+}
+
+interface LLMMessage {
+	role: 'user' | 'assistant' | 'tool' | 'system';
+	content: string;
+	tool_calls?: any[];
+	tool_call_id?: string;
+}
+
+interface StreamEvent {
+	type: 'thinking' | 'tool_start' | 'tool_result' | 'final' | 'error';
+	text?: string;
+	tool?: string;
+	args?: Record<string, unknown>;
+	result?: string;
+	error?: string;
+}
 
 // ============ CONFIGURATION ============
 const corsOrigin = process.env.CORS_ORIGIN || '*';
@@ -17,12 +76,6 @@ class VexError extends Error {
 	constructor(message: string, public code: string, public statusCode: number = 500) {
 		super(message);
 		this.name = 'VexError';
-	}
-}
-
-class ValidationError extends VexError {
-	constructor(message: string) {
-		super(message, 'VALIDATION_ERROR', 400);
 	}
 }
 
@@ -286,7 +339,7 @@ You help users with:
 Always be helpful, concise, and accurate. When showing prices, format them nicely.
 If you don't have enough information, ask for clarification.`;
 
-async function callLLM(messages: Message[], toolDefs: any[]): Promise<any> {
+async function callLLM(messages: LLMMessage[], toolDefs: any[]): Promise<any> {
 	const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
 		method: 'POST',
 		headers: {
@@ -297,7 +350,7 @@ async function callLLM(messages: Message[], toolDefs: any[]): Promise<any> {
 		},
 		body: JSON.stringify({
 			model: OPENROUTER_MODEL,
-			messages: [{ role: 'system', content: systemPrompt }, ...messages],
+			messages: [{ role: 'system', content: systemPrompt }, ...messages.map(m => ({ role: m.role, content: m.content, tool_calls: m.tool_calls, tool_call_id: m.tool_call_id }))],
 			tools: toolDefs.map(t => ({ type: 'function', function: t })),
 			stream: false
 		})
@@ -311,8 +364,8 @@ async function callLLM(messages: Message[], toolDefs: any[]): Promise<any> {
 	return await response.json();
 }
 
-async function* runAgentLoop(message: string, walletCtx: WalletContext, history: Message[]): AsyncGenerator<StreamEvent> {
-	const userMessage: Message = { role: 'user', content: message };
+async function* runAgentLoop(message: string, walletCtx: WalletContext, history: LLMMessage[]): AsyncGenerator<StreamEvent> {
+	const userMessage: LLMMessage = { role: 'user', content: message };
 	history.push(userMessage);
 
 	const toolDefs = Object.values(tools).map(t => ({
@@ -347,19 +400,19 @@ async function* runAgentLoop(message: string, walletCtx: WalletContext, history:
 					const tool = tools[toolName as keyof typeof tools];
 
 					if (tool) {
-						yield { type: 'tool_start', tool: { id: toolCall.id, name: toolName, args: toolCall.function.arguments } };
+						yield { type: 'tool_start', tool: toolName, args: JSON.parse(toolCall.function.arguments || '{}') };
 
 						try {
 							const args = JSON.parse(toolCall.function.arguments || '{}');
 							const result = await tool.execute(args, walletCtx);
 							const resultStr = JSON.stringify(result);
 
-							history.push({ role: 'tool', tool_call_id: toolCall.id, content: resultStr });
-							yield { type: 'tool_end', tool: { id: toolCall.id, name: toolName, result: resultStr } };
+							history.push({ role: 'tool', content: resultStr, tool_call_id: toolCall.id });
+							yield { type: 'tool_result', tool: toolName, result: resultStr };
 						} catch (error) {
 							const errorMsg = error instanceof Error ? error.message : 'Tool execution failed';
-							history.push({ role: 'tool', tool_call_id: toolCall.id, content: JSON.stringify({ error: errorMsg }) });
-							yield { type: 'tool_end', tool: { id: toolCall.id, name: toolName, result: JSON.stringify({ error: errorMsg }) } };
+							history.push({ role: 'tool', content: JSON.stringify({ error: errorMsg }), tool_call_id: toolCall.id });
+							yield { type: 'tool_result', tool: toolName, result: JSON.stringify({ error: errorMsg }) };
 						}
 					}
 				}
@@ -394,7 +447,7 @@ app.get('/', (c) => c.json({ name: 'VEX API', version: '0.1.0', status: 'operati
 app.get('/health', (c) => c.json({ status: 'ok', timestamp: Date.now() }));
 
 // Session store
-const sessions = new Map<string, Message[]>();
+const sessions = new Map<string, LLMMessage[]>();
 
 // Chat endpoint
 const chatSchema = z.object({ message: z.string().min(1).max(2000), sessionId: z.string().min(1) });
@@ -421,7 +474,7 @@ app.post('/agent/chat', async (c) => {
 						controller.enqueue(encoder.encode(`data: ${JSON.stringify(event)}\n\n`));
 					}
 					sessions.set(sessionId, history);
-				} catch (error) {
+				} catch {
 					controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: 'error', error: 'Stream failed' })}\n\n`));
 				}
 				controller.close();
@@ -439,7 +492,7 @@ app.post('/agent/chat', async (c) => {
 
 // Clear session
 app.delete('/agent/session/:id', (c) => {
-	const sessionId = c.req.param('id');
+	const sessionId = c.req.param('id')!;
 	sessions.delete(sessionId);
 	return c.json({ success: true, sessionId });
 });
@@ -451,7 +504,7 @@ app.get('/market/trending', async (c) => {
 });
 
 app.get('/market/token/:mint', async (c) => {
-	const mint = c.req.param('mint');
+	const mint = c.req.param('mint')!;
 	const data = await getTokenData(mint);
 	if (!data) return c.json({ message: 'Token not found' }, 404);
 	return c.json(data);
@@ -463,12 +516,12 @@ const pubkeySchema = z.string().refine((val) => {
 }, { message: 'Invalid Solana public key' });
 
 app.get('/wallet/:pubkey', async (c) => {
-	const pubkey = c.req.param('pubkey');
+	const pubkey = c.req.param('pubkey')!;
 	const parsed = pubkeySchema.safeParse(pubkey);
 	if (!parsed.success) return c.json({ message: 'Invalid wallet address', code: 'VALIDATION_ERROR' }, 400);
 
 	try {
-		const walletContext = await getWalletContext(pubkey);
+		const walletContext = await getWalletContext(parsed.data);
 		return c.json(walletContext);
 	} catch (error) {
 		return c.json(formatError(error), 500);
