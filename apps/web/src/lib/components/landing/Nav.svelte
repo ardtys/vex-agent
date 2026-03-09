@@ -1,15 +1,29 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { browser } from '$app/environment';
 
 	let scrolled = false;
 	let mobileMenuOpen = false;
+
+	// Lock body scroll when mobile menu is open
+	$: if (browser) {
+		if (mobileMenuOpen) {
+			document.body.style.overflow = 'hidden';
+		} else {
+			document.body.style.overflow = '';
+		}
+	}
 
 	onMount(() => {
 		const handleScroll = () => {
 			scrolled = window.scrollY > 50;
 		};
 		window.addEventListener('scroll', handleScroll);
-		return () => window.removeEventListener('scroll', handleScroll);
+		return () => {
+			window.removeEventListener('scroll', handleScroll);
+			// Cleanup: ensure scroll is restored
+			document.body.style.overflow = '';
+		};
 	});
 </script>
 
@@ -91,66 +105,71 @@
 		</div>
 	</div>
 
+	<!-- Mobile menu backdrop -->
+	{#if mobileMenuOpen}
+		<button
+			class="md:hidden fixed inset-0 bg-black/60 z-40"
+			on:click={() => mobileMenuOpen = false}
+			aria-label="Close menu"
+		></button>
+	{/if}
+
 	<!-- Mobile menu -->
 	{#if mobileMenuOpen}
-		<div class="md:hidden absolute top-full left-0 right-0 glass-dark border-t border-[var(--border)] animate-fade-in-up">
-			<div class="px-6 py-6 flex flex-col gap-4">
+		<div class="md:hidden fixed top-[60px] left-0 right-0 bottom-0 glass-dark border-t border-[var(--border)] z-50 overflow-y-auto">
+			<div class="px-4 py-6 flex flex-col gap-2">
 				<a
 					href="/demo"
-					class="text-[var(--lime)] text-sm uppercase tracking-widest flex items-center justify-between bg-[var(--lime)]/5 -mx-2 px-2 py-2 rounded-lg border border-[var(--lime)]/20"
+					class="text-[var(--lime)] text-sm uppercase tracking-widest flex items-center justify-between bg-[var(--lime)]/5 px-4 py-4 rounded-lg border border-[var(--lime)]/20 touch-target"
 					on:click={() => mobileMenuOpen = false}
 				>
 					<span class="flex items-center gap-2">
 						<span class="w-2 h-2 rounded-full bg-[var(--lime)] animate-pulse"></span>
 						Demo
 					</span>
-					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
 					</svg>
 				</a>
 				<a
 					href="/how-it-works"
-					class="text-[var(--muted)] text-sm uppercase tracking-widest hover:text-[var(--white)] transition-colors flex items-center justify-between"
+					class="text-[var(--muted)] text-sm uppercase tracking-widest hover:text-[var(--white)] transition-colors flex items-center justify-between px-4 py-4 rounded-lg hover:bg-[var(--surface)] touch-target"
 					on:click={() => mobileMenuOpen = false}
 				>
 					<span>How it works</span>
-					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
 					</svg>
 				</a>
 				<a
 					href="/tools"
-					class="text-[var(--muted)] text-sm uppercase tracking-widest hover:text-[var(--white)] transition-colors flex items-center justify-between"
+					class="text-[var(--muted)] text-sm uppercase tracking-widest hover:text-[var(--white)] transition-colors flex items-center justify-between px-4 py-4 rounded-lg hover:bg-[var(--surface)] touch-target"
 					on:click={() => mobileMenuOpen = false}
 				>
 					<span>Tools</span>
-					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
 					</svg>
 				</a>
 				<a
 					href="/docs"
-					class="text-[var(--muted)] text-sm uppercase tracking-widest hover:text-[var(--white)] transition-colors flex items-center justify-between"
+					class="text-[var(--muted)] text-sm uppercase tracking-widest hover:text-[var(--white)] transition-colors flex items-center justify-between px-4 py-4 rounded-lg hover:bg-[var(--surface)] touch-target"
 					on:click={() => mobileMenuOpen = false}
 				>
 					<span>Docs</span>
-					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
 					</svg>
 				</a>
 
-				<div class="h-px bg-[var(--border)] my-2"></div>
+				<div class="h-px bg-[var(--border)] my-3"></div>
 
 				<a
 					href="/demo"
-					class="text-[var(--lime)] text-sm uppercase tracking-widest flex items-center justify-between"
+					class="btn-primary w-full text-center justify-center touch-target"
 					on:click={() => mobileMenuOpen = false}
 				>
-					<span>Try Demo</span>
-					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-					</svg>
+					Try Demo
 				</a>
 			</div>
 		</div>

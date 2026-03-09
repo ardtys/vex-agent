@@ -10,6 +10,7 @@
 	import Testimonials from '$lib/components/landing/Testimonials.svelte';
 	import EarlyAccess from '$lib/components/landing/EarlyAccess.svelte';
 	import Footer from '$lib/components/landing/Footer.svelte';
+	import ContractAddress from '$lib/components/landing/ContractAddress.svelte';
 
 	// New components
 	import TrendingTokens from '$lib/components/landing/TrendingTokens.svelte';
@@ -36,6 +37,7 @@
 <Nav />
 <Ticker />
 <Hero />
+<ContractAddress />
 <Marquee text="EXECUTE • DOMINATE • REPEAT" outlined={true} />
 <WhatItDoes />
 <LiveStats />
