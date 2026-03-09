@@ -87,17 +87,17 @@
 		<!-- CTA Buttons -->
 		<div class="flex flex-wrap gap-4 mb-10">
 			<a
-				href="/app"
+				href="/demo"
 				class="btn-primary"
 			>
-				Launch App
+				Try Demo
 			</a>
 			<a
-				href="/demo"
+				href="/how-it-works"
 				class="inline-flex items-center gap-2 bg-[var(--lime)]/10 text-[var(--lime)] font-mono text-xs uppercase tracking-wider px-6 py-4 border border-[var(--lime)]/30 hover:border-[var(--lime)] hover:bg-[var(--lime)]/20 transition-all duration-300"
 			>
 				<span class="w-2 h-2 rounded-full bg-[var(--lime)] animate-pulse"></span>
-				Try Demo
+				How it Works
 			</a>
 			<a
 				href="#features"

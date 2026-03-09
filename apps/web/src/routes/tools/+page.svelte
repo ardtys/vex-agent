@@ -441,7 +441,7 @@
 				All these tools are available right now. Start trading with natural language.
 			</p>
 			<div class="flex flex-col sm:flex-row gap-4 justify-center">
-				<a href="/app" class="btn-primary">Launch App</a>
+				<a href="/demo" class="btn-primary">Try Demo</a>
 				<a href="/how-it-works" class="btn-ghost border border-[var(--border)] px-6 py-3">How It Works</a>
 			</div>
 		</div>

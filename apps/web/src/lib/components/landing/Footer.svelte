@@ -2,10 +2,10 @@
 	const currentYear = new Date().getFullYear();
 
 	const productLinks = [
+		{ label: 'Demo', href: '/demo' },
 		{ label: 'How it Works', href: '/how-it-works' },
 		{ label: 'Tools', href: '/tools' },
-		{ label: 'Docs', href: '/docs' },
-		{ label: 'Launch App', href: '/app' }
+		{ label: 'Docs', href: '/docs' }
 	];
 
 	const socialLinks = [

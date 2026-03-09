@@ -650,13 +650,13 @@
 		<!-- CTA Section -->
 		<div class="text-center mt-16 pt-16 border-t border-[var(--border)]">
 			<h2 class="font-display text-3xl md:text-4xl text-[var(--white)] mb-4">
-				Ready to trade for real?
+				Want early access?
 			</h2>
 			<p class="text-[var(--muted)] mb-8 max-w-md mx-auto">
-				Connect your Solana wallet and start trading with VEX's AI-powered agent.
+				Join our waitlist to be the first to know when VEX launches.
 			</p>
-			<a href="/app" class="btn-primary text-lg px-8 py-4">
-				Launch App
+			<a href="/#early-access" class="btn-primary text-lg px-8 py-4">
+				Join Waitlist
 			</a>
 		</div>
 	</div>
