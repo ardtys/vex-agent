@@ -1,6 +1,46 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
+	// Stats with animated counters
+	const stats = [
+		{ value: 15000, prefix: '$', suffix: '+', label: 'Volume Processed', duration: 2000 },
+		{ value: 234, prefix: '', suffix: '+', label: 'Transactions', duration: 1800 },
+		{ value: 47, prefix: '', suffix: '', label: 'Active Users', duration: 1500 },
+		{ value: 98.5, prefix: '', suffix: '%', label: 'Success Rate', duration: 1600, decimals: 1 }
+	];
+
+	let displayValues = stats.map(() => 0);
+	let statsVisible = false;
+
+	function animateValue(index: number, start: number, end: number, duration: number, decimals = 0) {
+		const startTime = performance.now();
+
+		const update = (currentTime: number) => {
+			const elapsed = currentTime - startTime;
+			const progress = Math.min(elapsed / duration, 1);
+
+			// Easing function for smooth animation
+			const easeOut = 1 - Math.pow(1 - progress, 3);
+			const current = start + (end - start) * easeOut;
+
+			displayValues[index] = decimals > 0 ? parseFloat(current.toFixed(decimals)) : Math.floor(current);
+			displayValues = displayValues; // Trigger reactivity
+
+			if (progress < 1) {
+				requestAnimationFrame(update);
+			}
+		};
+
+		requestAnimationFrame(update);
+	}
+
+	function formatNumber(num: number): string {
+		if (num >= 1000) {
+			return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+		}
+		return num.toString();
+	}
+
 	const commands = [
 		'> swap 10 SOL for WIF',
 		'> check rug score for PUMP',
@@ -15,6 +55,8 @@
 	let charIndex = 0;
 	let isDeleting = false;
 	let showCursor = true;
+
+	let statsElement: HTMLElement;
 
 	onMount(() => {
 		const typeSpeed = 80;
@@ -54,7 +96,31 @@
 			showCursor = !showCursor;
 		}, 530);
 
-		return () => clearInterval(cursorInterval);
+		// Intersection Observer for stats animation
+		const observer = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (entry.isIntersecting && !statsVisible) {
+						statsVisible = true;
+						stats.forEach((stat, index) => {
+							setTimeout(() => {
+								animateValue(index, 0, stat.value, stat.duration, stat.decimals || 0);
+							}, index * 150);
+						});
+					}
+				});
+			},
+			{ threshold: 0.5 }
+		);
+
+		if (statsElement) {
+			observer.observe(statsElement);
+		}
+
+		return () => {
+			clearInterval(cursorInterval);
+			observer.disconnect();
+		};
 	});
 </script>
 
@@ -135,24 +201,16 @@
 			</div>
 		</div>
 
-		<!-- Stats row with enhanced styling -->
-		<div class="flex flex-wrap gap-8 md:gap-12 mt-16 pt-8 border-t border-[var(--border)]">
-			<div class="group">
-				<div class="text-4xl md:text-5xl font-display text-[var(--lime)] text-glow-lime group-hover:scale-110 transition-transform duration-300">$2.4M+</div>
-				<div class="text-xs text-[var(--muted)] uppercase tracking-wider mt-1">Volume Processed</div>
-			</div>
-			<div class="group">
-				<div class="text-4xl md:text-5xl font-display text-[var(--white)] group-hover:text-[var(--lime)] group-hover:text-glow-lime transition-all duration-300">12K+</div>
-				<div class="text-xs text-[var(--muted)] uppercase tracking-wider mt-1">Transactions</div>
-			</div>
-			<div class="group">
-				<div class="text-4xl md:text-5xl font-display text-[var(--white)] group-hover:text-[var(--lime)] group-hover:text-glow-lime transition-all duration-300">847</div>
-				<div class="text-xs text-[var(--muted)] uppercase tracking-wider mt-1">Active Users</div>
-			</div>
-			<div class="group">
-				<div class="text-4xl md:text-5xl font-display text-[var(--white)] group-hover:text-[var(--lime)] group-hover:text-glow-lime transition-all duration-300">99.9%</div>
-				<div class="text-xs text-[var(--muted)] uppercase tracking-wider mt-1">Uptime</div>
-			</div>
+		<!-- Stats row with animated counters -->
+		<div bind:this={statsElement} class="flex flex-wrap gap-8 md:gap-12 mt-16 pt-8 border-t border-[var(--border)]">
+			{#each stats as stat, index}
+				<div class="group">
+					<div class="text-4xl md:text-5xl font-display {index === 0 ? 'text-[var(--lime)] text-glow-lime' : 'text-[var(--white)] group-hover:text-[var(--lime)] group-hover:text-glow-lime'} transition-all duration-300 group-hover:scale-110">
+						{stat.prefix}{stat.value >= 1000 ? formatNumber(displayValues[index]) : displayValues[index]}{stat.suffix}
+					</div>
+					<div class="text-xs text-[var(--muted)] uppercase tracking-wider mt-1">{stat.label}</div>
+				</div>
+			{/each}
 		</div>
 	</div>
 
